@@ -1,0 +1,8 @@
+POST http://localhost:3001/api/fridges
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyOTExOTNkOWEyMjhkYmY1ZGE5YTZmNSIsImVtYWlsIjoibGVzYW5waUBsZXNhbnBpLmNvbSIsImlhdCI6MTY1MzY3Njc4MX0.oVKptfCTf7mK2roooxj8U-morlvOF9L8w9JLTAmtzX4
+
+{
+"name": "neveritaBonita", 
+"deviceId": "cr7-nevera"
+}

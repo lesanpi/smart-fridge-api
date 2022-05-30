@@ -1,0 +1,4 @@
+GET http://localhost:3001/api/fridges
+Content-Type: application/json
+
+// 6291193d9a228dbf5da9a6f5

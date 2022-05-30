@@ -1,0 +1,9 @@
+POST http://localhost:3001/api/users 
+Content-Type: application/json
+
+{
+"email": "lesanpi@lesanpi.com", 
+"name": "lesanpi", 
+"password": "lesanpi",
+"phone": "04149137341"
+}
