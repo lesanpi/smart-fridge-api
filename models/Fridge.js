@@ -1,8 +1,10 @@
 const { Schema, model } = require('mongoose');
 
 const fridgeSchema = new Schema({
-    deviceId: String,
-    name: String,
+    type: {
+        type: Number,
+        required: true
+    },
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User'

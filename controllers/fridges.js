@@ -3,6 +3,7 @@ const fridgesRouter = require('express').Router()
 const Fridge = require('../models/Fridge')
 const User = require('../models/User')
 const userExtractor = require('../middlewares/userExtractor')
+const fridgeExtractor = require('../middlewares/fridgeExtractor')
 
 fridgesRouter.get('/', (request, response) => {
     Fridge.find({}).populate('user', {
@@ -15,14 +16,56 @@ fridgesRouter.get('/', (request, response) => {
         .catch(err => next(err))
 })
 
-fridgesRouter.get('/:id', (request, response, next) => {
-    const { id } = request.params;
-    Fridge.findById(id)
-        .then(fridge => {
-            if (fridge) return response.json(fridge)
-            response.status(404).send({ error: `Fridge with id ${id} not found` })
+fridgesRouter.post('/alert', fridgeExtractor, async (request, response, next) => {
+    const { body } = request
+    const { user, id } = request
+    const { message } = body
+
+    const fridge = await Fridge.findById(id);
+    if (!fridge) {
+        return response.status(401).json({
+            error: 'Fridge not found'
         })
-        .catch(err => next(err))
+    }
+    const ownerUser = await User.findById(user);
+    if (!ownerUser) {
+        return response.status(401).json({
+            error: 'User not found'
+        })
+    }
+
+    var axios = require('axios');
+    ownerUser.tokens.forEach(
+        (token) => {
+            var data = JSON.stringify({
+                "to": token,
+                "notification": {
+                    "title": `¡Atención! ¡Alerta de #${id}!`,
+                    "body": `${body.message}`
+                },
+                "priority": "high"
+            });
+
+            var config = {
+                method: 'post',
+                url: 'https://fcm.googleapis.com/fcm/send',
+                headers: {
+                    'Authorization': `key=${process.env.FCM_SERVER_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                data: data
+            };
+
+            axios(config)
+                .then(function (response) {
+                    // console.log(JSON.stringify(response.data));
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+    )
+
 
 })
 
@@ -51,33 +94,32 @@ fridgesRouter.put('/:id', (request, response, next) => {
 })
 
 fridgesRouter.post('/', userExtractor, async (request, response, next) => {
-    const fridge = request.body
+    const { body } = request
+    const { type } = body
 
-    if (!fridge.name) {
-        return response.status(400).json({
-            error: 'Required "Name" field is missing'
-        })
-    }
-
-    if (!fridge.deviceId) {
-        return response.status(400).json({
-            error: 'Required "Device Id" field is missing'
-        })
-    }
 
     const { userId } = request
 
     const user = await User.findById(userId)
-
+    if (!user) {
+        return response.status(401).json({
+            error: 'User not found'
+        })
+    }
+    if (type === null || !(type === 0 || type === 1)) {
+        return response.status(401).json({
+            error: 'Invalid type or not found'
+        })
+    }
     const newFridge = new Fridge({
-        deviceId: fridge.deviceId,
-        name: fridge.name,
-        user: user._id
+        user: user._id,
+        type: type
     })
 
     // newFridge.save().then(saveFridge => {
     //     response.json(saveFridge)
     // }).catch(err => next(err))
+
 
     try {
         const savedFridge = await newFridge.save()
@@ -90,8 +132,7 @@ fridgesRouter.post('/', userExtractor, async (request, response, next) => {
             user._id,
             { fridges: user.fridges.concat(savedFridge._id) },
             { new: true })
-
-        response.json(savedFridge)
+        return response.json(savedFridge)
     } catch (error) {
         next(error)
     }

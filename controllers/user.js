@@ -6,6 +6,30 @@ const userExtractor = require('../middlewares/userExtractor')
 
 
 userRouter.post('/', userExtractor, async (request, response) => {
+    const { body } = request
+    const { userId } = request
+    const { email, name, password, phone } = body
+    try {
+        const user = await User.findById(userId).populate('fridges', {
+            deviceId: 1,
+            name: 1,
+        })
+        return response.send({
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            phone: user.phone,
+            fridges: user.fridges,
+        })
+    } catch (error) {
+        return response.status(404).json({
+            error: 'No se pudo encontrar el usuario'
+        })
+    }
+
+})
+
+userRouter.post('/tokens', userExtractor, async (request, response) => {
     const { userId } = request
 
     try {
@@ -13,8 +37,8 @@ userRouter.post('/', userExtractor, async (request, response) => {
             deviceId: 1,
             name: 1,
         })
-        // console.log(user)
         return response.send({
+            id: user._id,
             name: user.name,
             email: user.email,
             phone: user.phone,

@@ -2,8 +2,9 @@ POST http://localhost:3001/api/users
 Content-Type: application/json
 
 {
-"email": "lesanpi@lesanpi.com", 
-"name": "lesanpi", 
-"password": "lesanpi",
-"phone": "04149137341"
+"email": "lucho@lucho.com", 
+"name": "lucho", 
+"password": "lucho",
+"phone": "04149137341",
+"fcmToken": "eiqCk8EoSjOpEToHv0FvLB:APA91bF7oVviNovW-CvsLlv04FuqGaOkarFckfh7Zm1GMvG1uCTizJQW83YFt1qtC4QMsb1BT6V3EwMfz7etfXnnMoNEfYF6Op9OrfBOFQp-wAPTkR2XpsV5u7tpHTCHEjXywT4nU0sq"
 }

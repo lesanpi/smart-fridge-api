@@ -15,9 +15,10 @@ module.exports = (request, response, next) => {
         return response.status(401).json({ error: 'Token missing or invalid' })
     }
 
-    const { id: userId } = decodedToken
+    const { id: id, user: user } = decodedToken
 
-    request.userId = userId
+    request.id = id
+    request.user = user
     next()
 }
 

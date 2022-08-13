@@ -14,7 +14,7 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Fridge',
     }],
-
+    tokens: [String],
 }, { collection: 'users' })
 
 userSchema.methods.encryptPassword = (password) => {
@@ -32,6 +32,7 @@ userSchema.set('toJSON', {
         delete returnedObject.__v
 
         delete returnedObject.passwordHash
+        delete returnedObject.tokens
     }
 })
 

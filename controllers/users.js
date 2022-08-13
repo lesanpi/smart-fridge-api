@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt')
+const { token } = require('morgan')
 const usersRouter = require('express').Router()
 const User = require('../models/User')
 
@@ -19,7 +20,7 @@ usersRouter.get('/', async (request, response) => {
 
 usersRouter.post('/', async (request, response) => {
     const { body } = request
-    const { email, name, password, phone } = body
+    const { email, name, password, phone, fcmToken } = body
 
     if (!email) {
         return response.status(400).json({
@@ -45,6 +46,12 @@ usersRouter.post('/', async (request, response) => {
         })
     }
 
+    if (!fcmToken) {
+        return response.status(400).json({
+            error: 'An error occurred'
+        })
+    }
+
     const saltRounds = 10
 
     const passwordHash = await bcrypt.hash(password, saltRounds)
@@ -52,9 +59,11 @@ usersRouter.post('/', async (request, response) => {
         email,
         name,
         phone,
-        passwordHash
-    })
+        passwordHash,
 
+    })
+    user.tokens = [fcmToken];
+    console.log(user)
     user.save()
         .then(
             savedUser => response.json(savedUser)
