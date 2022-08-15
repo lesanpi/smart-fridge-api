@@ -8,12 +8,21 @@ const userExtractor = require('../middlewares/userExtractor')
 userRouter.post('/', userExtractor, async (request, response) => {
     const { body } = request
     const { userId } = request
-    const { email, name, password, phone } = body
+    const { fcmToken } = body
+
+    if (!fcmToken) {
+        return response.status(404).json({
+            error: 'No token or invalid'
+        })
+    }
+
     try {
         const user = await User.findById(userId).populate('fridges', {
             deviceId: 1,
             name: 1,
         })
+        user.tokens = [...user.tokens.filter(token => token !== fcmToken), fcmToken]
+
         return response.send({
             id: user._id,
             name: user.name,

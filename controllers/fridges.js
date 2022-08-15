@@ -27,10 +27,17 @@ fridgesRouter.post('/alert', fridgeExtractor, async (request, response, next) =>
             error: 'Fridge not found'
         })
     }
-    const ownerUser = await User.findById(user);
+    const userId = fridge.user;
+    const ownerUser = await User.findById(userId);
     if (!ownerUser) {
         return response.status(401).json({
             error: 'User not found'
+        })
+    }
+
+    if (!message) {
+        return response.status(401).json({
+            error: 'No message'
         })
     }
 
@@ -40,7 +47,7 @@ fridgesRouter.post('/alert', fridgeExtractor, async (request, response, next) =>
             var data = JSON.stringify({
                 "to": token,
                 "notification": {
-                    "title": `¡Atención! ¡Alerta de #${id}!`,
+                    "title": `¡Alerta de #${id}!`,
                     "body": `${body.message}`
                 },
                 "priority": "high"
@@ -57,14 +64,15 @@ fridgesRouter.post('/alert', fridgeExtractor, async (request, response, next) =>
             };
 
             axios(config)
-                .then(function (response) {
-                    // console.log(JSON.stringify(response.data));
+                .then(function (result) {
+
                 })
                 .catch(function (error) {
-                    console.log(error);
                 });
         }
+
     )
+    response.json({ 'success': true })
 
 
 })

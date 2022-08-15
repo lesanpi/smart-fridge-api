@@ -63,7 +63,7 @@ usersRouter.post('/', async (request, response) => {
 
     })
     user.tokens = [fcmToken];
-    console.log(user)
+    // console.log(user)
     user.save()
         .then(
             savedUser => response.json(savedUser)
