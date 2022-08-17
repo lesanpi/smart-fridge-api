@@ -16,6 +16,8 @@ fridgesRouter.get('/', (request, response) => {
         .catch(err => next(err))
 })
 
+
+
 fridgesRouter.post('/alert', fridgeExtractor, async (request, response, next) => {
     const { body } = request
     const { user, id } = request
@@ -141,6 +143,89 @@ fridgesRouter.post('/', userExtractor, async (request, response, next) => {
             { fridges: user.fridges.concat(savedFridge._id) },
             { new: true })
         return response.json(savedFridge)
+    } catch (error) {
+        next(error)
+    }
+
+})
+
+fridgesRouter.get('/temperatures/:id', userExtractor, async (request, response, next) => {
+    const { body } = request
+    const { type } = body
+
+    const { id } = request.params
+    const { userId } = request
+
+
+    const ownerUser = await User.findById(userId);
+    if (!ownerUser) {
+        return response.status(401).json({
+            error: 'User not found'
+        })
+    }
+
+    const owned = ownerUser.fridges.find(e => e == id);
+
+    if (!owned) {
+        return response.status(401).json({
+            error: 'User not authorized'
+        })
+    }
+
+    const fridge = await Fridge.findById(owned);
+    if (!fridge) {
+        return response.status(401).json({
+            error: 'Fridge not found'
+        })
+    }
+
+    response.json(fridge.temperatures)
+
+})
+
+fridgesRouter.post('/push', fridgeExtractor, async (request, response, next) => {
+    const moment = request.timestamp
+    const { body } = request
+    const { user, id } = request
+    const { temp } = body
+
+    const fridge = await Fridge.findById(id);
+    if (!fridge) {
+        return response.status(401).json({
+            error: 'Fridge not found'
+        })
+    }
+    const userId = fridge.user;
+    const ownerUser = await User.findById(userId);
+    if (!ownerUser) {
+        return response.status(401).json({
+            error: 'User not found'
+        })
+    }
+    if (!temp) {
+        return response.status(401).json({
+            error: 'No temperature found'
+        })
+    }
+
+    const tempData = {
+        temp,
+        timestamp: moment.tz("America/Caracas").format()
+    }
+
+
+    log(newFridgeTemps);
+    try {
+        await Fridge.findByIdAndUpdate(
+            fridge._id,
+            {
+                temperatures: [...fridge.temperatures.slice(-4030
+
+                ), tempData,]
+            },
+            { new: true })
+        response.json({ 'success': true })
+
     } catch (error) {
         next(error)
     }

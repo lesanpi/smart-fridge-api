@@ -8,7 +8,18 @@ const fridgeSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User'
-    }
+    },
+    temperatures: [
+        {
+            temp: {
+                type: Number,
+                required: true,
+            },
+            timestamp: {
+
+            }
+        }
+    ]
 }, { collection: 'fridges' })
 
 fridgeSchema.set('toJSON', {

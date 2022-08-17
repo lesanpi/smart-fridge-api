@@ -1,6 +1,7 @@
 require('dotenv').config()
 require('./database')
 
+const time = require('express-timestamp')
 const express = require('express')
 const morgan = require('morgan');
 const app = express();
@@ -14,6 +15,7 @@ const fridgesRouter = require('./controllers/fridges')
 // const friendAcceptRouter = require('./controllers/friendAccept')
 
 // Middlewares
+app.use(time.init)
 app.use(morgan('dev'))
 app.use(express.json())
 
