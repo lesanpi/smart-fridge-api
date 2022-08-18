@@ -13,7 +13,7 @@ usersRouter.get('/', async (request, response) => {
 
         response.json(users)
     } catch (error) {
-        console.error(error)
+        // console.error(error)
         next(error)
     }
 })

@@ -214,7 +214,7 @@ fridgesRouter.post('/push', fridgeExtractor, async (request, response, next) => 
     }
 
 
-    log(newFridgeTemps);
+    // log(newFridgeTemps);
     try {
         await Fridge.findByIdAndUpdate(
             fridge._id,
