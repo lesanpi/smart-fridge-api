@@ -219,7 +219,7 @@ fridgesRouter.post('/push', fridgeExtractor, async (request, response, next) => 
         await Fridge.findByIdAndUpdate(
             fridge._id,
             {
-                temperatures: [...fridge.temperatures.slice(-4030
+                temperatures: [...fridge.temperatures.slice(-1440
 
                 ), tempData,]
             },
