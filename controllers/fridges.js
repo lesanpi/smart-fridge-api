@@ -79,10 +79,34 @@ fridgesRouter.post('/alert', fridgeExtractor, async (request, response, next) =>
 
 })
 
-fridgesRouter.delete('/:id', (request, response) => {
+fridgesRouter.delete('/:id', userExtractor, async (request, response) => {
     const { id } = request.params
+    const { userId } = request
+
+    const user = await User.findById(userId)
+    if (!user) {
+        return response.status(404).json({
+            error: 'User not found'
+        })
+    }
+
+    const owned = user.fridges.find(e => e == id);
+
+    if (!owned) {
+        return response.status(404).json({
+            error: 'Device not found in your fridge list'
+        })
+    }
+
+
+
+
     Fridge.findByIdAndDelete(id)
-        .then(result => {
+        .then(async result => {
+            await User.findByIdAndUpdate(
+                user._id,
+                { fridges: user.fridges.filter(e => e != id) },
+                { new: true });
             response.json({ message: "Fridge deleted succesfully" })
         })
         .catch(err => next(err))
