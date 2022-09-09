@@ -127,12 +127,12 @@ fridgesRouter.put('/:id', (request, response, next) => {
         .catch(next)
 })
 
-fridgesRouter.post('/', userExtractor, async (request, response, next) => {
+fridgesRouter.post('/', async (request, response, next) => {
     const { body } = request
-    const { type } = body
+    const { type, userId } = body
 
 
-    const { userId } = request
+    // const { userId } = request
 
     const user = await User.findById(userId)
     if (!user) {
