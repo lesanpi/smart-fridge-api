@@ -16,7 +16,7 @@ const fridgeSchema = new Schema({
                 required: true,
             },
             timestamp: {
-
+                type: Date
             }
         }
     ]
