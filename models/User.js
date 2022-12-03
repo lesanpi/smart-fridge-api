@@ -14,6 +14,7 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Fridge',
     }],
+    resetToken: String,
     tokens: [String],
 }, { collection: 'users' })
 
@@ -28,6 +29,7 @@ userSchema.methods.comparePassword = function (password) {
 userSchema.set('toJSON', {
     transform: (document, returnedObject) => {
         returnedObject.id = returnedObject._id
+        delete returnedObject.resetToken
         delete returnedObject._id
         delete returnedObject.__v
 

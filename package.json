@@ -21,7 +21,8 @@
 		"jsonwebtoken": "^8.5.1",
 		"mongoose": "^6.3.4",
 		"mongoose-unique-validator": "^3.0.0",
-		"morgan": "^1.10.0"
+		"morgan": "^1.10.0",
+		"node-mailjet": "^5.1.1"
 	},
 	"devDependencies": {
 		"jest": "^28.1.0",

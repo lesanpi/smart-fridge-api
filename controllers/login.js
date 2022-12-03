@@ -6,8 +6,9 @@ const User = require('../models/User')
 loginRouter.post('/', async (request, response) => {
     const { body } = request
     const { email, password, fcmToken } = body
-    const user = await User.findOne({ email })
+    const user = await User.findOne({ email: email })
 
+    console.log(user.password)
     if (!user) {
         return response.status(401).json({
             error: 'Invalid user or password'

@@ -3,6 +3,16 @@ const { token } = require('morgan')
 const usersRouter = require('express').Router()
 const User = require('../models/User')
 
+usersRouter.post('/reset', async (request, response) => {
+    console.log('request', request)
+    return response.json({
+         success: true 
+    })
+   
+
+
+})
+
 usersRouter.get('/', async (request, response) => {
     try {
         const users = await User.find({})
@@ -27,6 +37,7 @@ usersRouter.post('/', async (request, response) => {
             error: 'Required "Email" field is missing'
         })
     }
+    
 
     if (!phone) {
         return response.status(400).json({
@@ -56,7 +67,7 @@ usersRouter.post('/', async (request, response) => {
 
     const passwordHash = await bcrypt.hash(password, saltRounds)
     const user = new User({
-        email,
+        email: email.toLowerCase(),
         name,
         phone,
         passwordHash,
@@ -77,5 +88,8 @@ usersRouter.post('/', async (request, response) => {
         )
 
 })
+
+
+
 
 module.exports = usersRouter

@@ -2,8 +2,8 @@ POST http://localhost:3001/api/login
 Content-Type: application/json
 
 {
-"email": "lucho@lucho.com", 
-"password": "lucho",
+"email": "lespinerua@gmail.com", 
+"password": "Luis0903.",
 "fcmToken": "eiqCk8EoSjOpEToHv0FvLB:APA91bF7oVviNovW-CvsLlv04FuqGaOkarFckfh7Zm1GMvG1uCTizJQW83YFt1qtC4QMsb1BT6V3EwMfz7etfXnnMoNEfYF6Op9OrfBOFQp-wAPTkR2XpsV5u7tpHTCHEjXywT4nU0sq"
 }
 
