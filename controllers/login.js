@@ -8,7 +8,8 @@ loginRouter.post('/', async (request, response) => {
     const { email, password, fcmToken } = body
     const user = await User.findOne({ email: email })
 
-    console.log(user.password)
+    // console.log(user.password)
+    // console.log(fcmToken);
     if (!user) {
         return response.status(401).json({
             error: 'Invalid user or password'
@@ -38,6 +39,8 @@ loginRouter.post('/', async (request, response) => {
         id: user._id,
         email: user.email
     }
+
+    await user.save();
 
     const token = jwt.sign(userForToken, process.env.SECRET_KEY)
 

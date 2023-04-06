@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const fridgesRouter = require('express').Router()
 const Fridge = require('../models/Fridge')
 const User = require('../models/User')
@@ -162,12 +163,27 @@ fridgesRouter.post('/', async (request, response, next) => {
         // await user.save()
         // console.log(user.notes)
 
+        const fridgeForToken = {
+            id: savedFridge._id,
+            user: user._id,
+            type: type,
+        }
+
+        // console.log(fridgeForToken);
+        const token = jwt.sign(fridgeForToken, process.env.SECRET_KEY)
+        // console.log(token);
+
         await User.findByIdAndUpdate(
             user._id,
             { fridges: user.fridges.concat(savedFridge._id) },
             { new: true })
-        return response.json(savedFridge)
+
+        return response.send({
+            id: savedFridge._id, token: token
+        });
+        // return response.json({ ...savedFridge, token: token })
     } catch (error) {
+        console.log(error);
         next(error)
     }
 
